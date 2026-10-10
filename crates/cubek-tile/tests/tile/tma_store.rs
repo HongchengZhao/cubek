@@ -26,8 +26,8 @@ fn store_by_tma<E: Float, O: Destination>(
     space: Partitioning,
     #[define(E)] _dtype: ElemType,
 ) {
-    let src = input.tile(comptime!(space.clone()));
-    let dst = O::tile::<E, Const<1>>(out, comptime!(space.clone()));
+    let src = input.tile(&space);
+    let dst = O::tile::<E, Const<1>>(out, &space);
     for cube in &space {
         let mut dst_box = dst.at(&cube);
         let mut staged = dst_box.smem_box();

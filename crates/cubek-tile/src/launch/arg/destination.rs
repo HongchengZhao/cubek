@@ -15,10 +15,7 @@ pub trait Destination: Send + Sync + 'static {
     type Arg<E: Numeric, V: Size>: LaunchArg + CubeType;
 
     /// Serve the argument as a [`Tile`] under the kernel's one `partitioning`.
-    fn tile<E: Numeric, V: Size>(
-        arg: &Self::Arg<E, V>,
-        #[comptime] partitioning: Partitioning,
-    ) -> Tile<E>;
+    fn tile<E: Numeric, V: Size>(arg: &Self::Arg<E, V>, partitioning: &Partitioning) -> Tile<E>;
 }
 
 /// [`Destination`]'s host half: how what the launch built becomes the argument.
@@ -38,10 +35,7 @@ pub struct Buffered;
 impl Destination for Buffered {
     type Arg<E: Numeric, V: Size> = Output<'static, E, V>;
 
-    fn tile<E: Numeric, V: Size>(
-        arg: &Self::Arg<E, V>,
-        #[comptime] partitioning: Partitioning,
-    ) -> Tile<E> {
+    fn tile<E: Numeric, V: Size>(arg: &Self::Arg<E, V>, partitioning: &Partitioning) -> Tile<E> {
         arg.tile(partitioning)
     }
 }
@@ -72,10 +66,7 @@ pub struct TmaStored;
 impl Destination for TmaStored {
     type Arg<E: Numeric, V: Size> = TmaTileArg<E>;
 
-    fn tile<E: Numeric, V: Size>(
-        arg: &Self::Arg<E, V>,
-        #[comptime] partitioning: Partitioning,
-    ) -> Tile<E> {
+    fn tile<E: Numeric, V: Size>(arg: &Self::Arg<E, V>, partitioning: &Partitioning) -> Tile<E> {
         arg.tile(partitioning)
     }
 }
